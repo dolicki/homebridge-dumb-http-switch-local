@@ -1,0 +1,34 @@
+{
+  "pluginAlias": "HomebridgeBetterMiot",
+  "pluginType": "accessory",
+  "singular": true,
+  "schema": {
+    "devices": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "title": "URL",
+            "type": "string",
+            "required": true,
+            "minLength": 1
+          },
+          "method": {
+            "title": "method",
+            "type": "string",
+            "enum": [
+              "POST",
+              "GET"
+            ],
+            "default": "GET"
+          },
+          "body": {
+            "title": "Request Body/Params",
+            "type": "object"
+          }
+        }
+      }
+    }
+  }
+}
