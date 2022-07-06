@@ -47,8 +47,8 @@ export class HomebridgeDumbHTTPSwitchAccessory implements AccessoryPlugin {
           this.isRequestInProgress = true;
 
           const request = this.config.method === 'POST'
-            ? axios.get(url, { params: bodyOrParams })
-            : axios.post(url, bodyOrParams);
+            ? axios.post(url, bodyOrParams)
+            : axios.get(url, { params: bodyOrParams });
 
           await request;
 
