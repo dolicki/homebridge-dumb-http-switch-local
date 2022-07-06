@@ -1,34 +1,34 @@
 {
-  "pluginAlias": "HomebridgeBetterMiot",
+  "pluginAlias": "HomebridgeDumbHTTPSwitch",
   "pluginType": "accessory",
   "singular": true,
   "schema": {
-    "devices": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "url": {
-            "title": "URL",
-            "type": "string",
-            "required": true,
-            "minLength": 1
-          },
-          "method": {
-            "title": "method",
-            "type": "string",
-            "enum": [
-              "POST",
-              "GET"
-            ],
-            "default": "GET"
-          },
-          "body": {
-            "title": "Request Body/Params",
-            "type": "object"
-          }
-        }
-      }
+    "name": {
+      "title": "Name",
+      "type": "string",
+      "default": "HTTP Switch",
+      "required": true
+    },
+    "url": {
+      "title": "URL",
+      "type": "string",
+      "required": true,
+      "minLength": 1
+    },
+    "method": {
+      "title": "method",
+      "type": "string",
+      "enum": [
+        "POST",
+        "GET"
+      ],
+      "default": "GET"
+    },
+    "body": {
+      "title": "Request Body/Params",
+      "type": "object",
+      "minProperties": 0,
+      "maxProperties": 1000
     }
   }
 }
