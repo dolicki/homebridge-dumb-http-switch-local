@@ -17,8 +17,16 @@ const packageJSON = require('../package.json');
 interface IHomebridgeDumbHTTPSwitchAccessoryConfig extends AccessoryConfig {
   url: string;
   method: 'GET' | 'POST';
-  body: Record<string, unknown>;
+  body: string;
 }
+
+const getBody = (body: string): Record<string, unknown> => {
+  try {
+    return JSON.parse(body) || {};
+  } catch (e) {
+    return {};
+  }
+};
 
 export class HomebridgeDumbHTTPSwitchAccessory implements AccessoryPlugin {
   public readonly config: IHomebridgeDumbHTTPSwitchAccessoryConfig;
@@ -41,7 +49,7 @@ export class HomebridgeDumbHTTPSwitchAccessory implements AccessoryPlugin {
       .onGet(() => this.isRequestInProgress)
       .onSet(async () => {
         const url = this.config.url;
-        const bodyOrParams = this.config.body || {};
+        const bodyOrParams = getBody(this.config.body);
 
         try {
           this.isRequestInProgress = true;

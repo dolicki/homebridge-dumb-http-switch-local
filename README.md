@@ -7,7 +7,7 @@ This is accessory plugin
 {
   "url": "some url",
   "method": "POST",
-  "body": { "test": true }
+  "body": "{ \"test\": true }"
 }
 ```
 

@@ -25,10 +25,9 @@
       "default": "GET"
     },
     "body": {
-      "title": "Request Body/Params",
-      "type": "object",
-      "minProperties": 0,
-      "maxProperties": 1000
+      "title": "Request Body/Params as JSON string",
+      "type": "string",
+      "default": "{}"
     }
   }
 }
