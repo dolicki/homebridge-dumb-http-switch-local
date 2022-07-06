@@ -1,7 +1,7 @@
 {
   "displayName": "Homebridge Dumb HTTP Switch",
   "name": "homebridge-dumb-http-switch",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Just a button thats make http request",
   "license": "Apache-2.0",
   "repository": {
