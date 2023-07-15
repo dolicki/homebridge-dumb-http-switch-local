@@ -5,18 +5,18 @@ import {
   AccessoryConfig,
   Service,
   Characteristic,
-} from 'homebridge';
+} from "homebridge";
 
-import axios from 'axios';
+import axios from "axios";
 
-import { ACCESSORY_NAME } from './settings';
+import { ACCESSORY_NAME } from "./settings";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const packageJSON = require('../package.json');
+const packageJSON = require("../package.json");
 
 interface IHomebridgeDumbHTTPSwitchAccessoryConfig extends AccessoryConfig {
   url: string;
-  method: 'GET' | 'POST';
+  method: "GET" | "POST";
   body: string;
 }
 
@@ -30,9 +30,8 @@ const getBody = (body: string): Record<string, unknown> => {
 
 export class HomebridgeDumbHTTPSwitchAccessory implements AccessoryPlugin {
   public readonly config: IHomebridgeDumbHTTPSwitchAccessoryConfig;
-  public readonly Characteristic: typeof Characteristic = this.api.hap.Characteristic;
-
-  private isRequestInProgress = false;
+  public readonly Characteristic: typeof Characteristic =
+    this.api.hap.Characteristic;
 
   private readonly switchService: Service;
   private readonly informationService: Service;
@@ -40,51 +39,57 @@ export class HomebridgeDumbHTTPSwitchAccessory implements AccessoryPlugin {
   constructor(
     public readonly log: Logger,
     config: AccessoryConfig,
-    public readonly api: API,
+    public readonly api: API
   ) {
     this.config = config as IHomebridgeDumbHTTPSwitchAccessoryConfig;
 
     this.switchService = new this.api.hap.Service.Switch(this.config.name);
-    this.switchService.getCharacteristic(this.Characteristic.On)
-      .onGet(() => this.isRequestInProgress)
-      .onSet(async () => {
-        const url = this.config.url;
-        const bodyOrParams = getBody(this.config.body);
-
-        try {
-          this.isRequestInProgress = true;
-
-          const request = this.config.method === 'POST'
-            ? axios.post(url, bodyOrParams)
-            : axios.get(url, { params: bodyOrParams });
-
-          await request;
-
-          this.isRequestInProgress = false;
-
-          return true;
-        } catch (error) {
-          this.log.error(String(error));
-
-          this.isRequestInProgress = false;
-
-          return false;
-        }
+    this.switchService
+      .getCharacteristic(this.Characteristic.On)
+      .onGet(async () => await this.checkStatus())
+      .onSet(async (value) => {
+        await this.turnOff;
+        return false;
       });
 
     this.informationService = new this.api.hap.Service.AccessoryInformation()
-      .setCharacteristic(this.Characteristic.Manufacturer, 'Egor Rudinsky')
+      .setCharacteristic(this.Characteristic.Manufacturer, "Egor Rudinsky")
       .setCharacteristic(this.Characteristic.Model, ACCESSORY_NAME)
-      .setCharacteristic(this.Characteristic.FirmwareRevision, packageJSON.version);
+      .setCharacteristic(
+        this.Characteristic.FirmwareRevision,
+        packageJSON.version
+      );
 
-    log.info('Switch finished initializing!');
+    log.info("Switch finished initializing!");
+  }
+
+  async turnOff() {
+    const url = this.config.url + "/turnOff";
+    try {
+      const request = axios.get(url, {
+        timeout: 1000,
+      });
+      await request;
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async checkStatus() {
+    const url = this.config.url + "/status";
+    try {
+      const request = axios.get(url, {
+        timeout: 1000,
+      });
+      await request;
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   getServices(): Service[] {
-    return [
-      this.informationService,
-      this.switchService,
-    ];
+    return [this.informationService, this.switchService];
   }
-
 }
