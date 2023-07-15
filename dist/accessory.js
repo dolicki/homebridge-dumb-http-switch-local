@@ -16,6 +16,7 @@ const getBody = (body) => {
         return {};
     }
 };
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 class HomebridgeDumbHTTPSwitchAccessory {
     constructor(log, config, api) {
         this.log = log;
@@ -27,7 +28,8 @@ class HomebridgeDumbHTTPSwitchAccessory {
             .getCharacteristic(this.Characteristic.On)
             .onGet(async () => await this.checkStatus())
             .onSet(async (value) => {
-            await this.turnOff;
+            await this.turnOff();
+            await delay(1000);
             return false;
         });
         this.informationService = new this.api.hap.Service.AccessoryInformation()

@@ -27,7 +27,7 @@ const getBody = (body: string): Record<string, unknown> => {
     return {};
   }
 };
-
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 export class HomebridgeDumbHTTPSwitchAccessory implements AccessoryPlugin {
   public readonly config: IHomebridgeDumbHTTPSwitchAccessoryConfig;
   public readonly Characteristic: typeof Characteristic =
@@ -48,7 +48,8 @@ export class HomebridgeDumbHTTPSwitchAccessory implements AccessoryPlugin {
       .getCharacteristic(this.Characteristic.On)
       .onGet(async () => await this.checkStatus())
       .onSet(async (value) => {
-        await this.turnOff;
+        await this.turnOff();
+        await delay(1000);
         return false;
       });
 
